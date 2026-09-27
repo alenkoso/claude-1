@@ -93,6 +93,14 @@ if grep -q prettier "$STUB_LOG"; then
   echo "    calls: $(cat "$STUB_LOG")" >&2; fail "a package under a root biome config skips prettier"
 else pass "a package under a root biome config skips prettier"; fi
 
+# A relative file path gives a relative project root, and the hook has already
+# cd'd into it by the time it looks for the config.
+: > "$STUB_LOG"
+PATH="$BIN:$PATH" run_hook auto-format.sh "mono/packages/app/src/a.ts" >/dev/null
+if grep -q prettier "$STUB_LOG"; then
+  echo "    calls: $(cat "$STUB_LOG")" >&2; fail "a relative path under a root biome config skips prettier"
+else pass "a relative path under a root biome config skips prettier"; fi
+
 : > "$STUB_LOG"
 run_hook post-edit-typecheck.sh "$PKG/src/a.ts" >/dev/null
 if grep -qxF -- "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true $PKG/src/a.ts" "$STUB_LOG"; then

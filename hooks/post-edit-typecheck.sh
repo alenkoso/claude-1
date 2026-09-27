@@ -47,9 +47,9 @@ cd "$PROJECT_ROOT" || exit 0
 
 # A workspace package inherits the Biome config at the monorepo root, and npm
 # and yarn workspaces install the biome binary there too.
-find_up "$PROJECT_ROOT" biome.json biome.jsonc >/dev/null || exit 0
+find_up . biome.json biome.jsonc >/dev/null || exit 0
 # A bare `npx biome` would download a biome the project never pinned.
-BIOME=$(find_up "$PROJECT_ROOT" node_modules/.bin/biome) || exit 0
+BIOME=$(find_up . node_modules/.bin/biome) || exit 0
 [ -x "$BIOME" ] || exit 0
 
 OUT=$("$BIOME" check --write --no-errors-on-unmatched \
